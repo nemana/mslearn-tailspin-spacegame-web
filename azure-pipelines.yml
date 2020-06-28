@@ -46,6 +46,13 @@ steps:
     projects: '**/*.csproj'
 
 - task: DotNetCoreCLI@2
+  displayName: 'test the project - $(buildConfiguration)'
+  inputs:
+    command: 'test'
+    arguments: '--no-restore --configuration $(buildConfiguration)'
+    projects: '**/*Tests.csproj'
+
+- task: DotNetCoreCLI@2
   displayName: 'Publish the project - $(buildConfiguration)'
   inputs:
     command: 'publish'
