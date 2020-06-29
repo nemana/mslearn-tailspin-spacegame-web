@@ -56,12 +56,31 @@ stages:
     displayName: 'Deploy job'
     pool:
       vmImage: 'ubuntu-18.04'
+    environment: dev
     variables:
     - group: Release
     steps:
     - task: AzureWebAppContainer@1
       inputs:
         appName: $(ContainerApp)
+        azureSubscription: 'web deployment'
+        imageName: $(RegistryName)/$(webRepository):$(build.buildId)
+
+- stage: 'stagging'
+  displayName: 'Deploy the container'
+  dependsOn: Deploy
+  jobs:
+  - job: 'staging'
+    displayName: 'staging Deploy job'
+    pool:
+      vmImage: 'ubuntu-18.04'
+    environment: staging
+    variables:
+    - group: Release
+    steps:
+    - task: AzureWebAppContainer@1
+      inputs:
+        appName: $(ContainerAppStaging)
         azureSubscription: 'web deployment'
         imageName: $(RegistryName)/$(webRepository):$(build.buildId)
 
