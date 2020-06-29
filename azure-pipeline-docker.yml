@@ -15,6 +15,28 @@ stages:
     pool:
       vmImage: 'ubuntu-18.04'
     steps:
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore project dependencies'
+      inputs:
+        command: 'restore'
+        projects: '**/*.csproj'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Build the project - $(buildConfiguration)'
+      inputs:
+        command: 'build'
+        arguments: '--no-restore --configuration $(buildConfiguration)'
+        projects: '**/*.csproj'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish the project - $(buildConfiguration)'
+      inputs:
+        command: 'publish'
+        projects: '**/*.csproj'
+        publishWebProjects: false
+        arguments: '--no-build --configuration Release --output $(Build.SourcesDirectory)/Tailspin.SpaceGame.Web/bin/(buildConfiguration)/publish'
+        zipAfterPublish: false
+
     - task: Docker@2
       displayName: 'Build and push the image to container registry'
       inputs:
@@ -39,8 +61,8 @@ stages:
     steps:
     - task: AzureWebAppContainer@1
       inputs:
-       appName: $(ContainerApp)
-       azureSubscription: 'web deployment'
-       imageName: $(RegistryName)/$(webRepository):$(build.buildId)
+        appName: $(ContainerApp)
+        azureSubscription: 'web deployment'
+        imageName: $(RegistryName)/$(webRepository):$(build.buildId)
 
 
