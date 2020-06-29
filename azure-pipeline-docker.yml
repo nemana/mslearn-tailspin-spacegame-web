@@ -34,7 +34,7 @@ stages:
         command: 'publish'
         projects: '**/*.csproj'
         publishWebProjects: false
-        arguments: '--no-build --configuration Release --output $(Build.SourcesDirectory)/Tailspin.SpaceGame.Web/bin/(buildConfiguration)/publish'
+        arguments: '--no-build --configuration Release --output $(Build.SourcesDirectory)/Tailspin.SpaceGame.Web/bin/$(buildConfiguration)/publish'
         zipAfterPublish: false
 
     - task: Docker@2
